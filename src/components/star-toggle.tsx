@@ -18,6 +18,7 @@ export function StarToggle({
   size?: "sm" | "xs";
 }) {
   const { optimisticValue, loading, handleUpdate } = useOptimisticUpdate(
+    1,
     value,
     onClick,
   );

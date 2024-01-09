@@ -17,42 +17,33 @@ import { Check } from "lucide-react";
 import { useOptimisticUpdate } from "@/src/features/tag/useOptimisticUpdate";
 import { TagInput } from "@/src/features/tag/components/TagInput";
 import { TagItemCreate } from "@/src/features/tag/components/TagCreateItem";
-import { api } from "@/src/utils/api";
-import { useHasAccess } from "@/src/features/rbac/utils/checkAccess";
 
 export function TagPopOver({
+  index,
   tags,
   availableTags,
-  projectId,
-  traceId,
+
+  onClick,
 }: {
+  index: number;
   tags: string[];
   availableTags: string[];
-  projectId: string;
-  traceId: string;
+
+  onClick: (value: string[]) => Promise<unknown>;
 }) {
   const [selectedTags, setSelectedTags] = useState<string[]>(tags);
   const [inputValue, setInputValue] = useState("");
-  const utils = api.useUtils();
   // const hasAccess = useHasAccess({ projectId, scope: "objects:tag" });
-  const mutTags = api.traces.updateTags.useMutation({
-    onSuccess: () => {
-      void utils.traces.filterOptions.invalidate();
-      void utils.traces.all.invalidate();
-      console.log("Success");
-    },
-  });
-  console.log("Popover selectedTags ", selectedTags);
+
   const { optimisticValue, loading, handleUpdate } = useOptimisticUpdate(
+    index,
     tags,
-    (value) =>
-      mutTags.mutateAsync({
-        projectId,
-        traceId,
-        tags: value,
-      }),
+    (value) => onClick(value),
   );
 
+  if (index === 0) {
+    console.log("Popover selectedTags ", optimisticValue);
+  }
   const allTags = availableTags.filter(
     (value) => !selectedTags.includes(value),
   );
@@ -61,6 +52,7 @@ export function TagPopOver({
     <Popover
       onOpenChange={(isOpen) => {
         if (!isOpen) {
+          console.log("Pop Up open changed", selectedTags);
           void handleUpdate(selectedTags);
           console.log("Pop Up Closed");
         }

@@ -364,17 +364,35 @@ export default function TracesTable({
       id: "tags",
       header: "Tags",
       cell: ({ row }) => {
+        const number = row.index;
+
         const selectedTags: string[] = row.getValue("tags");
         const traceId: string = row.getValue("id");
         const filterOptionTags = traceFilterOptions.data?.tags ?? [];
         const allTags = filterOptionTags.map((t) => t.value);
-        console.log("Row selectedTags", selectedTags);
+        if (number === 0) {
+          console.log("Row selectedTags", selectedTags);
+        }
+        const utils = api.useUtils();
+        const mutTags = api.traces.updateTags.useMutation({
+          onSuccess: () => {
+            void utils.traces.filterOptions.invalidate();
+            void utils.traces.all.invalidate();
+            console.log("Success");
+          },
+        });
         return (
           <TagPopOver
-            projectId={projectId}
+            index={number}
             tags={selectedTags}
             availableTags={allTags}
-            traceId={traceId}
+            onClick={(value) =>
+              mutTags.mutateAsync({
+                projectId,
+                traceId,
+                tags: value,
+              })
+            }
           />
         );
       },
