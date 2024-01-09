@@ -90,6 +90,15 @@ export function TracePage({ traceId }: { traceId: string }) {
     },
   );
 
+  const utils = api.useUtils();
+  const mutTags = api.traces.updateTags.useMutation({
+    onSuccess: () => {
+      void utils.traces.filterOptions.invalidate();
+      void utils.traces.all.invalidate();
+      console.log("Success");
+    },
+  });
+
   const filterOptionTags = traceFilterOptions.data?.tags ?? [];
   const allTags = filterOptionTags.map((t) => t.value);
   const totalCost = trace.data?.observations.reduce(
@@ -117,6 +126,7 @@ export function TracePage({ traceId }: { traceId: string }) {
         actionButtons={
           <>
             <StarTraceToggle
+              index={0}
               traceId={trace.data.id}
               projectId={trace.data.projectId}
               value={trace.data.bookmarked}
@@ -170,10 +180,16 @@ export function TracePage({ traceId }: { traceId: string }) {
         <div className="flex flex-row items-center gap-3 p-2.5">
           Tags
           <TagPopOver
+            index={0}
             tags={trace.data.tags}
             availableTags={allTags}
-            traceId={trace.data.id}
-            projectId={trace.data.projectId}
+            onClick={(value) =>
+              mutTags.mutateAsync({
+                projectId: trace.data.projectId,
+                traceId: trace.data.id,
+                tags: value,
+              })
+            }
           />
         </div>
       </div>

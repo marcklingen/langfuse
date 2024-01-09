@@ -7,18 +7,20 @@ import { cn } from "@/src/utils/tailwind";
 import { useOptimisticUpdate } from "@/src/features/tag/useOptimisticUpdate";
 
 export function StarToggle({
+  index,
   value,
   disabled = false,
   onClick,
   size = "sm",
 }: {
+  index: number;
   value: boolean;
   disabled?: boolean;
   onClick: (value: boolean) => Promise<unknown>;
   size?: "sm" | "xs";
 }) {
   const { optimisticValue, loading, handleUpdate } = useOptimisticUpdate(
-    1,
+    index,
     value,
     onClick,
   );
@@ -42,11 +44,13 @@ export function StarToggle({
 }
 
 export function StarTraceToggle({
+  index,
   projectId,
   traceId,
   value,
   size = "sm",
 }: {
+  index: number;
   projectId: string;
   traceId: string;
   value: boolean;
@@ -63,6 +67,7 @@ export function StarTraceToggle({
 
   return (
     <StarToggle
+      index={index}
       value={value}
       size={size}
       disabled={!hasAccess}
@@ -98,6 +103,7 @@ export function StarSessionToggle({
 
   return (
     <StarToggle
+      index={0}
       value={value}
       size={size}
       disabled={!hasAccess}

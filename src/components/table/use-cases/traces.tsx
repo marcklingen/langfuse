@@ -202,6 +202,7 @@ export default function TracesTable({
         return typeof traceId === "string" &&
           typeof bookmarked === "boolean" ? (
           <StarTraceToggle
+            index={row.index}
             traceId={traceId}
             projectId={projectId}
             value={bookmarked}
@@ -364,15 +365,16 @@ export default function TracesTable({
       id: "tags",
       header: "Tags",
       cell: ({ row }) => {
-        const number = row.index;
-
         const selectedTags: string[] = row.getValue("tags");
-        const traceId: string = row.getValue("id");
+
         const filterOptionTags = traceFilterOptions.data?.tags ?? [];
         const allTags = filterOptionTags.map((t) => t.value);
-        if (number === 0) {
-          console.log("Row selectedTags", selectedTags);
+        const index = row.index;
+
+        if (index === 0) {
+          console.log("Row allTags", allTags, selectedTags);
         }
+
         const utils = api.useUtils();
         const mutTags = api.traces.updateTags.useMutation({
           onSuccess: () => {
@@ -381,18 +383,20 @@ export default function TracesTable({
             console.log("Success");
           },
         });
+
         return (
           <TagPopOver
-            index={number}
+            index={index}
             tags={selectedTags}
             availableTags={allTags}
-            onClick={(value) =>
-              mutTags.mutateAsync({
+            onClick={(value) => {
+              console.log("Pop Over Clicked", value);
+              return mutTags.mutateAsync({
                 projectId,
-                traceId,
+                traceId: row.original.id,
                 tags: value,
-              })
-            }
+              });
+            }}
           />
         );
       },

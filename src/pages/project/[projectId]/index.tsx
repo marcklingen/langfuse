@@ -86,6 +86,12 @@ export default function Start() {
           operator: "<" as const,
           value: dateRange.to,
         },
+        // {
+        //   type: "string" as const,
+        //   column: "traceId",
+        //   operator: "==" as const,
+        //   value: traceId,
+        // },
       ]
     : [];
 

@@ -13,9 +13,8 @@ export function useOptimisticUpdate<T>(
     console.log("cachedValue", optimisticValue, cachedValue, value);
 
   useEffect(() => {
-    console.log("useEffect", value);
     setCachedValue(null);
-  }, [index, value]);
+  }, [value]);
 
   const handleUpdate = async (newValue: T) => {
     console.log("handleUpdate", newValue);

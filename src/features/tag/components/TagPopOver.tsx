@@ -22,13 +22,11 @@ export function TagPopOver({
   index,
   tags,
   availableTags,
-
   onClick,
 }: {
   index: number;
   tags: string[];
   availableTags: string[];
-
   onClick: (value: string[]) => Promise<unknown>;
 }) {
   const [selectedTags, setSelectedTags] = useState<string[]>(tags);
